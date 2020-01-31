@@ -30,6 +30,7 @@ public:
 	double zoom_y;
 	int angle;
 	bool mirror;
+	bool vertical;
 	int opacity;
 	int blend_type;
 	ED_Color *color;

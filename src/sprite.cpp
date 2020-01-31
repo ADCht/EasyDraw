@@ -98,27 +98,99 @@ ED_Bitmap* ED_Sprite::get_bitmap()
 	return this->bitmap;
 }
 
-static void set_surface_mirror(SDL_Surface *surface)
+#define SDL_LOCKIFMUST(s) (SDL_MUSTLOCK(s) ? SDL_LockSurface(s) : 0)
+#define SDL_UNLOCKIFMUST(s) { if(SDL_MUSTLOCK(s)) SDL_UnlockSurface(s); }
+
+int* reverse_array(int* orig, unsigned short int b)
 {
-	unsigned char* pixels = (unsigned char*)surface->pixels;
-	unsigned char* new_bitmap = new unsigned char[surface->w * surface->h * 4];
+	unsigned short int a = 0;
+	int swap;
+	for (a; a < --b; a++) //increment a and decrement b until they meet eachother
+	{
+		swap = orig[a];       //put what's in a into swap space
+		orig[a] = orig[b];    //put what's in b into a
+		orig[b] = swap;       //put what's in the swap (a) into b
+	}
+	return orig;    //return the new (reversed) string (a pointer to it)
+}
+
+int set_surface_mirror(SDL_Surface* surface)
+{
+	if (SDL_LOCKIFMUST(surface) < 0)
+		return -1;
+	if (surface->w < 2) {
+		SDL_UNLOCKIFMUST(surface);
+		return 0;
+	}
+	Uint8* pixels = (Uint8*)surface->pixels;
 	int temp = 0;
 	int height_add = 0;
 	for (int y1 = 0; y1 < surface->h; y1++) {
 		for (int x1 = 1; x1 <= surface->w; x1++) {
 			temp = surface->w - x1 + 1;
 			height_add = y1 * (surface->w * 4);
-			//std::swap(pixels[x1 * 4 - 4 + height_add], pixels[temp * 4 - 4 + height_add]);
-			//std::swap(pixels[x1 * 4 - 3 + height_add], pixels[temp * 4 - 3 + height_add]);
-			//std::swap(pixels[x1 * 4 - 2 + height_add], pixels[temp * 4 - 2 + height_add]);
-			//std::swap(pixels[x1 * 4 - 1 + height_add], pixels[temp * 4 - 1 + height_add]);
-			new_bitmap[x1 * 4 - 4 + height_add] = pixels[temp * 4 - 4 + height_add]; // red
-			new_bitmap[x1 * 4 - 3 + height_add] = pixels[temp * 4 - 3 + height_add]; // green
-			new_bitmap[x1 * 4 - 2 + height_add] = pixels[temp * 4 - 2 + height_add]; // blue
-			new_bitmap[x1 * 4 - 1 + height_add] = pixels[temp * 4 - 1 + height_add]; // alpha
+			std::swap(pixels[x1 * 4 - 4 + height_add], pixels[temp * 4 - 4 + height_add]);
+			std::swap(pixels[x1 * 4 - 3 + height_add], pixels[temp * 4 - 3 + height_add]);
+			std::swap(pixels[x1 * 4 - 2 + height_add], pixels[temp * 4 - 2 + height_add]);
+			std::swap(pixels[x1 * 4 - 1 + height_add], pixels[temp * 4 - 1 + height_add]);
+			if (x1 > surface->w / 2) break;
 		}
 	}
-	surface->pixels = new_bitmap;
+	SDL_UNLOCKIFMUST(surface);
+	return 0;
+}
+
+int set_surface_vertical(SDL_Surface* surface)
+{
+	Uint8* t;
+	register Uint8* a, * b;
+	Uint8* last;
+	register Uint16 pitch;
+
+	if (SDL_LOCKIFMUST(surface) < 0)
+		return -2;
+
+	/* do nothing unless at least two lines */
+	if (surface->h < 2) {
+		SDL_UNLOCKIFMUST(surface);
+		return 0;
+	}
+
+	/* get a place to store a line */
+	pitch = surface->pitch;
+	t = (Uint8*)malloc(pitch);
+
+	if (t == NULL) {
+		SDL_UNLOCKIFMUST(surface);
+		return -2;
+	}
+
+	/* get first line; it's about to be trampled */
+	memcpy(t, surface->pixels, pitch);
+
+	/* now, shuffle the rest so it's almost correct */
+	a = (Uint8*)surface->pixels;
+	last = a + pitch * (surface->h - 1);
+	b = last;
+
+	while (a < b) {
+		memcpy(a, b, pitch);
+		a += pitch;
+		memcpy(b, a, pitch);
+		b -= pitch;
+	}
+
+	/* in this shuffled state, the bottom slice is too far down */
+	memmove(b, b + pitch, last - b);
+
+	/* now we can put back that first row--in the last place */
+	memcpy(last, t, pitch);
+
+	/* everything is in the right place; close up. */
+	free(t);
+	SDL_UNLOCKIFMUST(surface);
+
+	return 0;
 }
 
 void ED_Sprite::draw()
@@ -145,6 +217,11 @@ void ED_Sprite::draw()
 
 	SDL_Surface* pNew = rotozoomSurfaceXY(this->bitmap->entity(), this->angle, this->zoom_x, this->zoom_y, SMOOTHING_ON);
 
+	if (this->vertical)
+		set_surface_vertical(pNew);
+	if (this->mirror)
+		set_surface_mirror(pNew);
+
 	SDL_Rect src_rect;
 	src_rect.x = 0;
 	src_rect.y = 0;
@@ -166,9 +243,6 @@ void ED_Sprite::draw()
 	if (this->tone)
 		SDL_SetSurfaceColorMod(pNew, this->tone->red, this->tone->green, this->tone->blue);
 	SDL_SetSurfaceAlphaMod(pNew, this->opacity);
-
-	if (this->mirror)
-		set_surface_mirror(pNew); // sprite mirror
 
 	SDL_BlitSurface(pNew, &src_rect, ED_Graphics::canvas, &dst_rect);
 
