@@ -7,7 +7,7 @@
 SDL_Renderer* g_renderer;
 SDL_Window* g_window;
 
-void Init_EasyDraw(int screen_width, int screen_height)
+void Init_EasyDraw(int screen_width, int screen_height, const char* title)
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
@@ -16,7 +16,7 @@ void Init_EasyDraw(int screen_width, int screen_height)
 
     ED_Graphics::screen_width = screen_width;
     ED_Graphics::screen_height = screen_height;
-    g_window = SDL_CreateWindow("SDLGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+    g_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
         screen_width, screen_height, SDL_WINDOW_SHOWN);
     SDL_SetWindowResizable(g_window, SDL_TRUE);
     g_renderer = SDL_CreateRenderer(g_window, 0, SDL_RENDERER_TARGETTEXTURE);

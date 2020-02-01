@@ -15,5 +15,6 @@
 #include "sprite.h"
 #include "table.h"
 #include "viewport.h"
+#include "tone.h"
 
 #include "ed_main.h"

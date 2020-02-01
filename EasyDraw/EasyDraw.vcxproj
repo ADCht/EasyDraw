@@ -160,14 +160,12 @@
     <ClCompile Include="..\src\font.cpp" />
     <ClCompile Include="..\src\ed_main.cpp" />
     <ClCompile Include="..\src\graphics.cpp" />
+    <ClCompile Include="..\src\plane.cpp" />
     <ClCompile Include="..\src\rect.cpp" />
     <ClCompile Include="..\src\sprite.cpp" />
     <ClCompile Include="..\src\table.cpp" />
     <ClCompile Include="..\src\tone.cpp" />
     <ClCompile Include="..\src\viewport.cpp" />
-    <None Include="EasyDraw.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\SDL2_gfx\SDL2_framerate.h" />
@@ -182,6 +180,7 @@
     <ClInclude Include="..\src\font.h" />
     <ClInclude Include="..\src\ed_main.h" />
     <ClInclude Include="..\src\graphics.h" />
+    <ClInclude Include="..\src\plane.h" />
     <ClInclude Include="..\src\rect.h" />
     <ClInclude Include="..\src\sprite.h" />
     <ClInclude Include="..\src\table.h" />

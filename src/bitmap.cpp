@@ -57,7 +57,7 @@ void ED_Bitmap::gradient_fill_rect(int x, int y, int width, int height, ED_Color
 {
     SDL_Color color1 = color1_->entity();
     SDL_Color color2 = color2_->entity();
-    unsigned char* pixels = (unsigned char*)m_surface->pixels;
+    unsigned char* pixels = (unsigned char*)this->m_surface->pixels;
     if (vertical) {
         for (int yi = 0; yi < height; yi++) {
             unsigned char r, g, b, a;
@@ -99,19 +99,17 @@ void ED_Bitmap::gradient_fill_rect(ED_Rect *rect, ED_Color *color1, ED_Color *co
 
 void ED_Bitmap::fill_rect(ED_Rect* rect, ED_Color* color)
 {
-    Uint8 color_val = SDL_MapRGBA(this->m_surface->format, color->red, color->green, color->blue, color->alpha);
-    SDL_FillRect(this->m_surface, rect->entity(), color_val);
+	this->fill_rect(rect->x, rect->y, rect->width, rect->height, color);
 }
 
 void ED_Bitmap::fill_rect(int x, int y, int width, int height, ED_Color* color)
 {
-    SDL_Rect rt;
-    rt.x = x;
-    rt.y = y;
-    rt.w = width;
-    rt.h = height;
-    Uint8 color_val = SDL_MapRGBA(this->m_surface->format, color->red, color->green, color->blue, color->alpha);
-    SDL_FillRect(this->m_surface, &rt, color_val);
+	SDL_Rect rt;
+	rt.x = x;
+	rt.y = y;
+	rt.w = width;
+	rt.h = height;
+	SDL_FillRect(this->m_surface, &rt, SDL_MapRGBA(this->m_surface->format, color->red, color->green, color->blue, color->alpha));
 }
 
 void ED_Bitmap::clear()
