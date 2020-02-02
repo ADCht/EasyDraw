@@ -17,6 +17,9 @@ public:
 	ED_Bitmap(const char *filename);
 	~ED_Bitmap();
 
+	void dispose();
+	bool IsDisposed();
+
 	int width();
 	int height();
 	ED_Rect *rect();
@@ -53,4 +56,6 @@ public:
 private:
 	unsigned char* m_buffer;
 	SDL_Surface* m_surface;
+	bool m_disposed;
+
 };

@@ -11,6 +11,9 @@ public:
 	ED_Plane(ED_Viewport* viewport_);
 	~ED_Plane();
 
+	void dispose();
+	bool IsDisposed();
+
 	ED_Viewport* get_viewport();
 	void set_viewport(ED_Viewport* viewport_);
 	void set_bitmap(ED_Bitmap* bitmap_);
@@ -39,4 +42,5 @@ public:
 
 private:
 	ED_Sprite* m_sprite;
+
 };

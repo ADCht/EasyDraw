@@ -12,7 +12,17 @@ ED_Plane::ED_Plane(ED_Viewport* viewport_)
 
 ED_Plane::~ED_Plane()
 {
-	delete this->m_sprite;
+	this->dispose();
+}
+
+void ED_Plane::dispose()
+{
+	this->m_sprite->dispose();
+}
+
+bool ED_Plane::IsDisposed()
+{
+	return this->m_sprite->IsDisposed();
 }
 
 ED_Viewport* ED_Plane::get_viewport()
@@ -27,12 +37,12 @@ void ED_Plane::set_viewport(ED_Viewport* viewport_)
 
 void ED_Plane::set_bitmap(ED_Bitmap* bitmap_)
 {
-	this->set_bitmap(bitmap_);
+	this->m_sprite->set_bitmap(bitmap_);
 }
 
 ED_Bitmap* ED_Plane::get_bitmap()
 {
-	return this->get_bitmap();
+	return this->m_sprite->get_bitmap();
 }
 
 bool ED_Plane::get_visible()

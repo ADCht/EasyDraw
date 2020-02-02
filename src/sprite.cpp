@@ -47,6 +47,12 @@ ED_Sprite::ED_Sprite(ED_Viewport* viewport_)
 
 ED_Sprite::~ED_Sprite()
 {
+	this->dispose();
+}
+
+void ED_Sprite::dispose()
+{
+	if (this->m_disposed) return;
 	this->viewport->del_sprite(this);
 	this->viewport = 0;
 	this->bitmap = 0;
@@ -65,6 +71,12 @@ ED_Sprite::~ED_Sprite()
 	this->color = new ED_Color();
 	this->blend_type = 0;
 	this->mirror = false;
+	this->m_disposed = true;
+}
+
+bool ED_Sprite::IsDisposed()
+{
+	return this->m_disposed;
 }
 
 ED_Viewport* ED_Sprite::get_viewport()
@@ -210,8 +222,8 @@ void ED_Sprite::draw()
 	}
 
 	SDL_Rect dst_rect;
-	dst_rect.x = base_x;
-	dst_rect.y = base_y;
+	dst_rect.x = base_x + this->viewport->rect->x;
+	dst_rect.y = base_y + this->viewport->rect->y;
 	dst_rect.w = this->src_rect->width;
 	dst_rect.h = this->src_rect->height;
 
@@ -245,6 +257,7 @@ void ED_Sprite::draw()
 	SDL_SetSurfaceAlphaMod(pNew, this->opacity);
 
 	SDL_BlitSurface(pNew, &src_rect, ED_Graphics::canvas, &dst_rect);
+	//SDL_RenderCopyExF(, , , , , , );
 
 	SDL_FreeSurface(pNew);
 	

@@ -14,8 +14,21 @@ ED_Bitmap::ED_Bitmap(const char* filename)
 
 ED_Bitmap::~ED_Bitmap()
 {
+	this->dispose();
+}
+
+void ED_Bitmap::dispose()
+{
+	if (this->m_disposed) return;
 	SDL_FreeSurface(this->m_surface);
+	delete[]this->m_buffer;
 	this->m_buffer = NULL;
+	this->m_disposed = true;
+}
+
+bool ED_Bitmap::IsDisposed()
+{
+	return this->m_disposed;
 }
 
 int ED_Bitmap::width()

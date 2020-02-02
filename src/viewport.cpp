@@ -32,6 +32,12 @@ ED_Viewport::ED_Viewport(int x_, int y_, int width_, int height_)
 
 ED_Viewport::~ED_Viewport()
 {
+	this->dispose();
+}
+
+void ED_Viewport::dispose()
+{
+	if (this->m_disposed) return;
 	for (auto iter = this->m_sprites.begin(); iter != this->m_sprites.end(); iter++)
 		(*iter)->set_viewport(0);
 	for (auto i = ED_Graphics::viewports.begin(); i != ED_Graphics::viewports.end(); i++)
@@ -42,6 +48,12 @@ ED_Viewport::~ED_Viewport()
 			i = ED_Graphics::viewports.begin();
 		}
 	}
+	this->m_disposed = true;
+}
+
+bool ED_Viewport::IsDisposed()
+{
+	return this->m_disposed;
 }
 
 void ED_Viewport::add_sprite(ED_Sprite* sprite)

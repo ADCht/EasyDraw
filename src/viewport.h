@@ -15,6 +15,9 @@ public:
 	ED_Viewport(int x_, int y_, int width_, int height_);
 	~ED_Viewport();
 
+	void dispose();
+	bool IsDisposed();
+
 	ED_Rect* rect;
 	bool visible;
 	int z;
@@ -29,4 +32,6 @@ public:
 
 private:
 	std::vector<ED_Sprite*> m_sprites;
+	bool m_disposed;
+
 };
