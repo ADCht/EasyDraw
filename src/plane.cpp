@@ -57,12 +57,12 @@ void ED_Plane::set_visible(bool v)
 
 int ED_Plane::get_z()
 {
-	return this->m_sprite->z;
+	return this->m_sprite->get_z();
 }
 
 void ED_Plane::set_z(int z)
 {
-	this->m_sprite->z = z;
+	this->m_sprite->set_z(z);
 }
 
 int ED_Plane::get_ox()

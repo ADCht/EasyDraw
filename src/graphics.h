@@ -9,13 +9,18 @@ class ED_Bitmap;
 
 namespace ED_Graphics
 {
+	// Private
 	extern SDL_Surface* canvas;
 	extern std::vector<ED_Viewport*> viewports;
 	extern unsigned char* screen_buffer;
+	extern int screen_brightness;
+	extern bool need_sort;
 
+	// Public
 	extern int screen_width;
 	extern int screen_height;
-	extern int screen_brightness;
+	extern int frame_rate;
+	extern int frame_count;
 
 	void init();
 	void update();

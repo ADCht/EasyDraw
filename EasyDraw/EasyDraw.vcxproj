@@ -160,6 +160,7 @@
     <ClCompile Include="..\src\font.cpp" />
     <ClCompile Include="..\src\ed_main.cpp" />
     <ClCompile Include="..\src\graphics.cpp" />
+    <ClCompile Include="..\src\input.cpp" />
     <ClCompile Include="..\src\plane.cpp" />
     <ClCompile Include="..\src\rect.cpp" />
     <ClCompile Include="..\src\sprite.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="..\src\font.h" />
     <ClInclude Include="..\src\ed_main.h" />
     <ClInclude Include="..\src\graphics.h" />
+    <ClInclude Include="..\src\input.h" />
     <ClInclude Include="..\src\plane.h" />
     <ClInclude Include="..\src\rect.h" />
     <ClInclude Include="..\src\sprite.h" />

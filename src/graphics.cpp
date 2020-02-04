@@ -7,6 +7,10 @@ unsigned char* ED_Graphics::screen_buffer = 0;
 int ED_Graphics::screen_width = 0;
 int ED_Graphics::screen_height = 0;
 int ED_Graphics::screen_brightness = 255;
+bool ED_Graphics::need_sort = false;
+
+int ED_Graphics::frame_rate = 60;
+int ED_Graphics::frame_count = 0;
 
 void ED_Graphics::init()
 {
@@ -18,7 +22,10 @@ void ED_Graphics::init()
 void ED_Graphics::update()
 {
 	SDL_FillRect(canvas, 0, SDL_MapRGBA(canvas->format, 0, 0, 0, 0));
-	std::sort(viewports.begin(), viewports.end(), [](ED_Viewport* a, ED_Viewport* b) { return a->z > b->z; }); // < = ÉýÐò | > = ½µÐò
+	if (need_sort) {
+		std::sort(viewports.begin(), viewports.end(), [](ED_Viewport* a, ED_Viewport* b) { return a->get_z() < b->get_z(); }); // < = ÉýÐò | > = ½µÐò
+		need_sort = false;
+	}
 	for (auto iter = viewports.begin(); iter != viewports.end(); iter++) {
 		if ((*iter)->visible)
 			(*iter)->draw();
@@ -34,6 +41,9 @@ void ED_Graphics::update()
 	SDL_RenderCopy(g_renderer, pTexture, &src_rt, &src_rt);
 	SDL_RenderPresent(g_renderer);
 	SDL_DestroyTexture(pTexture);
+
+	delay(1000 / frame_rate);
+	frame_count += 1;
 }
 
 void ED_Graphics::wait(int time)
@@ -60,7 +70,14 @@ ED_Bitmap* ED_Graphics::snap_to_bitmap()
 
 void ED_Graphics::resize_screen(int width, int height)
 {
-	return;
+	SDL_FreeSurface(canvas);
+	delete[]screen_buffer;
+	screen_buffer = new unsigned char[width * height * 4];
+	canvas = SDL_CreateRGBSurfaceWithFormatFrom((void*)screen_buffer, width, height,
+		32, 4 * width, SDL_PIXELFORMAT_RGBA32);
+	SDL_SetWindowSize(g_window, width, height);
+	screen_width = width;
+	screen_height = height;
 }
 
 void ED_Graphics::set_brightness(float value)

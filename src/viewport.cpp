@@ -56,6 +56,17 @@ bool ED_Viewport::IsDisposed()
 	return this->m_disposed;
 }
 
+void ED_Viewport::set_z(int z_)
+{
+	ED_Graphics::need_sort = true;
+	this->z = z_;
+}
+
+int ED_Viewport::get_z()
+{
+	return this->z;
+}
+
 void ED_Viewport::add_sprite(ED_Sprite* sprite)
 {
 	this->m_sprites.push_back(sprite);
@@ -75,7 +86,10 @@ void ED_Viewport::del_sprite(ED_Sprite* sprite)
 
 void ED_Viewport::draw()
 {
-	std::sort(this->m_sprites.begin(), this->m_sprites.end(), [](ED_Sprite* a, ED_Sprite* b) { return a->z > b->z; }); // < = ÉıĞò | > = ½µĞò
+	if (this->need_sort) {
+		std::sort(this->m_sprites.begin(), this->m_sprites.end(), [](ED_Sprite* a, ED_Sprite* b) { return a->get_z() < b->get_z(); }); // < = ÉıĞò | > = ½µĞò
+		this->need_sort = false;
+	}
 	for (auto iter = this->m_sprites.begin(); iter != this->m_sprites.end(); iter++)
 		(*iter)->draw();
 }

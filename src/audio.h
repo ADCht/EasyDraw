@@ -1,11 +1,8 @@
 #pragma once
-#include "SDL_mixer.h"
+#include "SDL_audio.h"
 
 namespace ED_Audio
 {
-	extern Mix_Music* bgm;
-	extern int se_channel;
-
 	void bgm_play(const char *filename, int volume = 100, int pitch = 100, int pos = 0);
 	void bgm_stop();
 	void bgm_fade(int time);

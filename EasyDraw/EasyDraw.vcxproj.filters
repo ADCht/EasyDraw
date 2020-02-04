@@ -69,6 +69,9 @@
     <ClCompile Include="..\src\plane.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\input.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\SDL2_gfx\SDL2_framerate.h">
@@ -123,6 +126,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plane.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\input.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

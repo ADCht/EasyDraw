@@ -20,7 +20,8 @@ public:
 
 	ED_Rect* rect;
 	bool visible;
-	int z;
+	void set_z(int z_);
+	int get_z();
 	int ox;
 	int oy;
 
@@ -29,8 +30,10 @@ public:
 
 public:
 	void draw();
+	bool need_sort;
 
 private:
+	int z;
 	std::vector<ED_Sprite*> m_sprites;
 	bool m_disposed;
 

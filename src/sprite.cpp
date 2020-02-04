@@ -110,6 +110,17 @@ ED_Bitmap* ED_Sprite::get_bitmap()
 	return this->bitmap;
 }
 
+int ED_Sprite::get_z()
+{
+	return this->z;
+}
+
+void ED_Sprite::set_z(int z_)
+{
+	this->viewport->need_sort = true;
+	this->z = z_;
+}
+
 #define SDL_LOCKIFMUST(s) (SDL_MUSTLOCK(s) ? SDL_LockSurface(s) : 0)
 #define SDL_UNLOCKIFMUST(s) { if(SDL_MUSTLOCK(s)) SDL_UnlockSurface(s); }
 
@@ -205,6 +216,21 @@ int set_surface_vertical(SDL_Surface* surface)
 	return 0;
 }
 
+void set_surface_grey(SDL_Surface* image)
+{
+	Uint32* pixels = (Uint32*)image->pixels;
+	for (int y = 0; y < image->h; y++)
+	{
+		for (int x = 0; x < image->w; x++)
+		{
+			Uint32 pixel = (Uint32)pixels[y * image->w + x];
+			Uint8 v = (((Uint8*)pixels)[0] + ((Uint8*)pixels)[1] + ((Uint8*)pixels)[2]) / 3;
+			pixel = (0xFF << 24) | (v << 16) | (v << 8) | v;
+			pixels[y * image->w + x] = pixel;
+		}
+	}
+}
+
 void ED_Sprite::draw()
 {
 	if (!this->visible) return;
@@ -218,14 +244,24 @@ void ED_Sprite::draw()
 	{
 		SDL_SetClipRect(ED_Graphics::canvas, this->viewport->rect->entity());
 		base_x += this->viewport->rect->x - this->viewport->ox;
-		base_x += this->viewport->rect->y - this->viewport->oy;
+		base_y += this->viewport->rect->y - this->viewport->oy;
 	}
 
 	SDL_Rect dst_rect;
-	dst_rect.x = base_x + this->viewport->rect->x;
-	dst_rect.y = base_y + this->viewport->rect->y;
-	dst_rect.w = this->src_rect->width;
-	dst_rect.h = this->src_rect->height;
+	if (this->viewport)
+	{
+		dst_rect.x = base_x + this->viewport->rect->x;
+		dst_rect.y = base_y + this->viewport->rect->y;
+		dst_rect.w = this->src_rect->width;
+		dst_rect.h = this->src_rect->height;
+	}
+	else
+	{
+		dst_rect.x = base_x;
+		dst_rect.y = base_y;
+		dst_rect.w = this->src_rect->width;
+		dst_rect.h = this->src_rect->height;
+	}
 
 	SDL_Surface* pNew = rotozoomSurfaceXY(this->bitmap->entity(), this->angle, this->zoom_x, this->zoom_y, SMOOTHING_ON);
 
@@ -253,11 +289,13 @@ void ED_Sprite::draw()
 	}
 
 	if (this->tone)
+	{
 		SDL_SetSurfaceColorMod(pNew, this->tone->red, this->tone->green, this->tone->blue);
+		set_surface_grey(pNew);
+	}
 	SDL_SetSurfaceAlphaMod(pNew, this->opacity);
 
 	SDL_BlitSurface(pNew, &src_rect, ED_Graphics::canvas, &dst_rect);
-	//SDL_RenderCopyExF(, , , , , , );
 
 	SDL_FreeSurface(pNew);
 	

@@ -26,7 +26,8 @@ public:
 	bool visible;
 	int x;
 	int y;
-	int z;
+	int get_z();
+	void set_z(int z_);
 	int ox;
 	int oy;
 	double zoom_x;
@@ -43,6 +44,7 @@ private:
 	ED_Viewport* viewport;
 	ED_Bitmap* bitmap;
 	bool m_disposed;
+	int z;
 
 public:
 	void draw();

@@ -3,7 +3,6 @@
 #pragma comment(lib, "SDL2.lib")
 #pragma comment(lib, "SDL2_image.lib")
 #pragma comment(lib, "SDL2_ttf.lib")
-#pragma comment(lib, "SDL2_mixer.lib")
 #pragma comment(lib, "SDL2main.lib")
 
 #include "audio.h"
@@ -16,5 +15,7 @@
 #include "table.h"
 #include "viewport.h"
 #include "tone.h"
+#include "plane.h"
+#include "input.h"
 
 #include "ed_main.h"
